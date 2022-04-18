@@ -10,6 +10,7 @@ int (*get_func(char s))(va_list *)
         {'o', print_oct},
         {'x', print_hex},
         {'X', print_hex},
+       
     };
     int i  = 0;
 

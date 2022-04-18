@@ -5,7 +5,7 @@ int print_hex(va_list *p_int)
     int len;
     char tmp[20];
 
-    int num = va_arg(*p_int, int);
+    unsigned int num = va_arg(*p_int, unsigned int);
     char *str = _itoa(num, tmp, 16);
 
     len = _strlen(str);
