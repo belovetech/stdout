@@ -1,13 +1,30 @@
 #ifndef PRINTF_H
 #define PRINTF_H
+#include <stdarg.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-char *_strcpy(char *dest, char *src);
-int _printf(const char *format, ...);
-int _strlen(char *s);
 
 typedef struct specifier
 {
-    char *
-} fmt_spec; 
+    char str;
+    int (*func)(va_list *);
 
-#endif  /* end of PRINTF_H */
+} fmt_spec;
+
+int _printf(const char *format, ...);
+int print_char(va_list *c);
+int print_str(va_list *str);
+int (*get_func(char s))(va_list *);
+char *_revstr(char *str);
+char *_itoa(unsigned int arg_int, char *strout, int base);
+char *__itoa(int arg_int, char *strout, int base);
+int _strlen(char *str);
+int print_int(va_list *p_int);
+int print_uint(va_list *p_int);
+int print_hex(va_list *p_int);
+int print_oct(va_list *p_int);
+
+
+#endif

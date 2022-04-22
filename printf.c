@@ -1,82 +1,41 @@
-#include <stdarg.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
 #include "printf.h"
-
 
 int _printf(const char *format, ...)
 {
-    va_list ap;
-    int i = 0, j = 0, len = 0;
-    char *dest, *argstr;
-
-    dest = malloc(sizeof(char) * 1500);
-
-    if (dest == NULL)
-        return (1);
-
-    va_start(ap, format);
-    while (format[i] != '\0')
+    va_list args;
+    char f;
+    int (*prints)(va_list *);
+    int i, len;
+    va_start(args, format);
+    
+    /*
+    char known_spec[] = {'c', 's', 'i', 'd', 'x', 'X',
+                        'o', 'p', '%', 'l', 'e', 'E','g',
+                        'G', 'f', 'h', 'L', 'u', 'n', 'b'};
+    char b;
+    */
+    len = 0;
+    for (i = 0; format[i] != '\0'; i++)
     {
-
-        if (format[i] == '%')
+       if (format[i] == '%' )
         {
-            i++;
-            // %c case
-            if (format[i] == 'c')
+            i++;  /* fast forward */
+            f = format[i];
+
+            if (f == '%' || format[i + 1] == '%')
             {
-                dest[j] = (char)va_arg(ap, int);
-                j++;
+                len += write(1, "%", 1);
+                continue;
             }
-             // %s case
-            else if (format[i] == 's')
-            {
-                argstr = va_arg(ap, char*);
-                 _strcpy(&dest[j], argstr);
-                j += _strlen(argstr);
-            }
-            // %% case
-            else if (format[i] == '%')
-            {
-                dest[j] = '%';
-                j++;
-            }
-             // %d case
-              else if (format[i] == 'd')
-            {
-                   
-            }
-             // %i case
-              else if (format[i] == 'i')
-            {
-                
-            }
+       
+            prints = get_func(f);
+            len += prints(&args);
         }
         else
         {
-            dest[j] = format[i];
-            j++;
+            len += write(1, &format[i], 1);
         }
-        i++;
     }
-
-    write(1, dest, j);
-    va_end(ap);
-    free(dest);
-    return (j);
-}
-
-
-int main(void)
-{
-    char a = 'Z';
-
-    char *str = "Beloved";
-    int len = _printf("hello world %c %s %%\n", a, str);
-    int len2 = printf("hello world %c %s %%\n", a, str);
-    printf("%d", len);
-    printf("%d", len2);
-
-    return (0);
+    va_end(args);
+    return (len);
 }
